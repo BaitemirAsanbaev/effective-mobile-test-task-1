@@ -1,5 +1,5 @@
 const {BadRequest, ServerError} = require("./errors");
-const { CreateItemService } = require("./service");
+const InventoryService = require("./service");
 
 class InventoryController {
   async createItem(req, res) {
@@ -8,7 +8,7 @@ class InventoryController {
        return BadRequest(res, "Name field must not be null")
     }
     try {
-      const item = await CreateItemService(name);
+      const item = await InventoryService.createItem(name);
       return res.json(item);
     } catch (e) {
       console.log(e);

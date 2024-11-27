@@ -1,7 +1,15 @@
-const { pool } = require('../db');
+const { pool } = require("../db");
+class InventoryRepo {
+  createItem = async (plu, name) => {
+    try {
+      return await pool.query(
+        "INSERT INTO item (plu, name) VALUES ($1, $2) RETURNING *",
+        [plu, name]
+      );
+    } catch (e) {
+      throw e;
+    }
+  };
+}
 
-const createItemRepo = async (plu, name) => {
-    return await pool.query("INSERT INTO item (plu, name) VALUES ($1, $2) RETURNING *", [plu, name]);
-};
-
-module.exports = { createItemRepo };
+module.exports = new InventoryRepo();
