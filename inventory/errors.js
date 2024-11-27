@@ -1,8 +1,17 @@
-const BadRequest = (res, message="Bad Request")=>{
-    return res.status(400).json({ message });
+class BadRequest extends Error {
+  constructor(message="Bad Request") {
+    super(message);
+    this.name = "BadRequest";
+    this.statusCode = 400; 
+  }
+}
+class NotFound extends Error {
+  constructor(message="Not Found") {
+    super(message);
+    this.name = "NotFound";
+    this.statusCode = 404; 
+  }
 }
 
-const ServerError = (res, message="Internal Server Error")=>{
-    res.status(500).json({ message});
-}
-module.exports = {BadRequest, ServerError}
+
+module.exports = { BadRequest, NotFound };
