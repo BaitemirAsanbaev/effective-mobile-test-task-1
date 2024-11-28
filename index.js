@@ -5,7 +5,8 @@ const ItemRouter = require('./item/router');
 const errorHandler = require('./error-handler');
 const ShopRouter = require('./shop/router');
 const InventoryRouter = require('./inventory/router');
-
+const swaggerSpec = require('./swagger');
+const swaggerUi = require('swagger-ui-express');
 dotenv.config();
 
 const app = express();
@@ -15,6 +16,7 @@ app.use(cors({
     origins: [process.env.CLIENT_URL]
 }));
 app.use(express.json());
+app.use('/swagger', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 app.use("/api/v1/item", ItemRouter);
 app.use("/api/v1/shop", ShopRouter);
 app.use("/api/v1/inventory", InventoryRouter);
