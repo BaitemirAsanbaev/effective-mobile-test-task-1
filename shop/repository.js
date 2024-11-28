@@ -1,4 +1,4 @@
-const { pool } = require("../../db");
+const { pool } = require("../db");
 class ShopRepo {
   createShop = async (name) => {
     try {

@@ -1,10 +1,10 @@
 const express = require('express');
 const dotenv = require('dotenv');
 const cors = require('cors');
-const ItemRouter = require('./Remains/item/router');
+const ItemRouter = require('./item/router');
 const errorHandler = require('./error-handler');
-const ShopRouter = require('./Remains/shop/router');
-const InventoryRouter = require('./Remains/inventory/router');
+const ShopRouter = require('./shop/router');
+const InventoryRouter = require('./inventory/router');
 
 dotenv.config();
 

@@ -1,4 +1,4 @@
-const ApiError = require("../../errors");
+const ApiError = require("../errors");
 const InventoryService = require("./service");
 const { validationResult } = require("express-validator");
 

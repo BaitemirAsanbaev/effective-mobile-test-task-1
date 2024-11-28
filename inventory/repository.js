@@ -1,4 +1,4 @@
-const { pool } = require("../../db");
+const { pool } = require("../db");
 class InventoryRepo {
   createInventory = async (item_plu, shop_id, amount) => {
     try {
