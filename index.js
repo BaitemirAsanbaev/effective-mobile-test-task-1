@@ -12,7 +12,7 @@ const app = express();
 
 app.use(cors({
     credentials: true,
-    origins: ['*', "http://localhost:3000"]
+    origins: [process.env.CLIENT_URL]
 }));
 app.use(express.json());
 app.use("/api/v1/item", ItemRouter);
@@ -21,7 +21,6 @@ app.use("/api/v1/inventory", InventoryRouter);
 app.use(errorHandler);
 
 const start = async () => {
-    
     const port = process.env.PORT;
     try {
         await app.listen(port, () => console.log("Started at port: ", port));
