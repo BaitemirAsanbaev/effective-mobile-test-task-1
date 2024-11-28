@@ -1,6 +1,6 @@
 const { Router } = require("express");
 const InventoryController = require("./controller");
-const validate = require("../middleware");
+const validate = require("../utils/middleware");
 const { body, param } = require("express-validator");
 
 const InventoryRouter = new Router();

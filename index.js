@@ -2,12 +2,12 @@ const express = require('express');
 const dotenv = require('dotenv');
 const cors = require('cors');
 const ItemRouter = require('./item/router');
-const errorHandler = require('./error-handler');
+const errorHandler = require('./utils/error-handler');
 const ShopRouter = require('./shop/router');
 const InventoryRouter = require('./inventory/router');
-const swaggerSpec = require('./swagger');
+const swaggerSpec = require('./utils/swagger');
 const swaggerUi = require('swagger-ui-express');
-const logger = require("./logger");
+const logger = require("./utils/logger");
 const morgan = require("morgan");
 
 dotenv.config();

@@ -1,4 +1,4 @@
-const ApiError = require("../errors");
+const ApiError = require("../utils/errors");
 const InventoryRepo = require("./repository");
 const { v4: uuid } = require("uuid");
 
