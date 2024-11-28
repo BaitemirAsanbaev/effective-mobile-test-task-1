@@ -40,7 +40,7 @@ class InventoryRepo {
   };
   deleteItem = async (plu) => {
     try {
-      return await pool.query('DELETE FROM item WHERE plu=$1', [plu]);
+      return await pool.query('DELETE FROM item WHERE plu=$1 RETURNING *', [plu]);
     } catch (e) {
       throw e;
     }

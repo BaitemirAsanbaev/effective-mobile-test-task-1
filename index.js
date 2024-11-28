@@ -2,6 +2,7 @@ const express = require('express');
 const dotenv = require('dotenv');
 const cors = require('cors');
 const inventoryRouter = require('./inventory/router');
+const errorHandler = require('./inventory/error-handler');
 
 dotenv.config();
 
@@ -13,6 +14,7 @@ app.use(cors({
 }));
 app.use(express.json());
 app.use("/api/v1/inventory", inventoryRouter);
+app.use(errorHandler);
 
 const start = async () => {
     

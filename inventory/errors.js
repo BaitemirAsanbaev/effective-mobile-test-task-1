@@ -1,17 +1,17 @@
-class BadRequest extends Error {
-  constructor(message="Bad Request") {
+class ApiError extends Error {
+  status;
+  error;
+  constructor(status, message, errors = []) {
     super(message);
-    this.name = "BadRequest";
-    this.statusCode = 400; 
+    this.status = status;
+    this.error = errors;
   }
-}
-class NotFound extends Error {
-  constructor(message="Not Found") {
-    super(message);
-    this.name = "NotFound";
-    this.statusCode = 404; 
+  static NotFound(message="Not Found", errors = []) {
+    return new ApiError(404, message, errors)
+  }
+  static BadRequest(message="Bad Request", errors = []) {
+    return new ApiError(400, message, errors)
   }
 }
 
-
-module.exports = { BadRequest, NotFound };
+module.exports = ApiError;

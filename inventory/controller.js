@@ -1,75 +1,102 @@
-const { BadRequest, NotFound } = require("./errors");
+const ApiError = require("./errors");
 const InventoryService = require("./service");
-const { notNullValidator } = require("./validator");
+const { validationResult } = require("express-validator");
 
 class InventoryController {
-  async createItem(req, res) {
-    const { name } = req.body;
+  async createItem(req, res, next) {
     try {
-      notNullValidator({ name });
+      const errors = validationResult(req);
+      if (!errors.isEmpty()) {
+        return next(ApiError.BadRequest("Validation error", errors.array()));
+      }
+
+      const { name } = req.body;
       const item = await InventoryService.createItem(name);
-      return res.json(item);
+      return res.status(201).json(item);
     } catch (e) {
-      if (e.code === "23505") {
-        return BadRequest(res, `Item with name ${name} already exists`);
-      }
-      return res.status(e.statusCode).json({ message: e.message });
+      next(e);
     }
   }
-  async getItemByPlu(req, res) {
-    const plu  = req.params.plu;
+
+  async getItemByPlu(req, res, next) {
+    const plu = req.params.plu;
     try {
-      notNullValidator({ plu });
+      const errors = validationResult(req);
+      if (!errors.isEmpty()) {
+        return next(ApiError.BadRequest("Validation error", errors.array()));
+      }
+
       const item = await InventoryService.getItemByPlu(plu);
+      if (!item) {
+        return next(ApiError.NotFound(`Item with PLU ${plu} was not found`));
+      }
       return res.json(item);
     } catch (e) {
-      if (e.code === "23503") {
-        return NotFound(res, `Item with plu ${plu} was not found`);
-      }
-      return res.status(e.statusCode).json({ message: e.message });
+      next(e);
     }
   }
-  async getItemByName(req, res) {
-    const  name  = req.params.name;
+
+  async getItemByName(req, res, next) {
+    const name = req.params.name;
     try {
-      notNullValidator({ name });
+      const errors = validationResult(req);
+      if (!errors.isEmpty()) {
+        return next(ApiError.BadRequest("Validation error", errors.array()));
+      }
+
       const item = await InventoryService.getItemByName(name);
-      return res.json(item);
-    } catch (e) {
-      if (e.code === "23503") {
-        return NotFound(res, `Item with name ${name} was not found`);
+      if (!item) {
+        return next(ApiError.NotFound(`Item with name ${name} was not found`));
       }
-      return res.status(e.statusCode).json({ message: e.message });
-    }
-  }
-  async getAllItems(req, res) {
-    try {
-      const item = await InventoryService.getAllItems();
       return res.json(item);
     } catch (e) {
-      return res.status(e.statusCode).json({ message: e.message });
+      next(e);
     }
   }
-  async updateItem(req, res) {
-    const plu = req.params.plu
+
+  async getAllItems(req, res, next) {
+    try {
+      const items = await InventoryService.getAllItems();
+      return res.json(items);
+    } catch (e) {
+      next(e);
+    }
+  }
+
+  async updateItem(req, res, next) {
+    const plu = req.params.plu;
     const { name } = req.body;
     try {
-      notNullValidator({ name });
-      notNullValidator({ plu });
-      const item = await InventoryService.updateItem();
-      return res.json(item);
+      const errors = validationResult(req);
+      if (!errors.isEmpty()) {
+        return next(ApiError.BadRequest("Validation error", errors.array()));
+      }
+
+      const updatedItem = await InventoryService.updateItem(plu, name);
+      if (!updatedItem) {
+        return next(ApiError.NotFound(`Item with PLU ${plu} was not found`));
+      }
+      return res.json(updatedItem);
     } catch (e) {
-      return res.status(e.statusCode).json({ message: e.message });
+      next(e);
     }
   }
-  async deleteItem(req, res) {
-    const plu = req.params.plu
+
+  async deleteItem(req, res, next) {
+    const plu = req.params.plu;
     try {
-      notNullValidator({ plu });
-      const item = await InventoryService.deleteItem(plu);
-      return res.json(item);
+      const errors = validationResult(req);
+      if (!errors.isEmpty()) {
+        return next(ApiError.BadRequest("Validation error", errors.array()));
+      }
+
+      const deletedItem = await InventoryService.deleteItem(plu);
+      if (!deletedItem) {
+        return next(ApiError.NotFound(`Item with PLU ${plu} was not found`));
+      }
+      return res.json(deletedItem);
     } catch (e) {
-      return res.status(e.statusCode).json({ message: e.message });
+      next(e);
     }
   }
 }
