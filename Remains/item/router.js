@@ -1,9 +1,9 @@
 const { Router } = require("express");
-const inventoryController = require("./controller");
-const validate = require("./middleware");
+const ItemController = require("./controller");
+const validate = require("../../middleware");
 const { body, param } = require("express-validator");
 
-const inventoryRouter = new Router();
+const ItemRouter = new Router();
 
 
 const validateCreateItem = [
@@ -50,11 +50,11 @@ const validateDeleteItem = [
 ];
 
 
-inventoryRouter.post("/create", validate(validateCreateItem), inventoryController.createItem);
-inventoryRouter.get("/:plu", validate(validateGetItemByPlu), inventoryController.getItemByPlu);
-inventoryRouter.get("/name/:name", validate(validateGetItemByName), inventoryController.getItemByName);
-inventoryRouter.get("/all", inventoryController.getAllItems);
-inventoryRouter.put("/update/:plu", validate(validateUpdateItem), inventoryController.updateItem);
-inventoryRouter.delete("/delete/:plu", validate(validateDeleteItem), inventoryController.deleteItem);
+ItemRouter.post("/create", validate(validateCreateItem), ItemController.createItem);
+ItemRouter.get("/:plu", validate(validateGetItemByPlu), ItemController.getItemByPlu);
+ItemRouter.get("/name/:name", validate(validateGetItemByName), ItemController.getItemByName);
+ItemRouter.get("/all", ItemController.getAllItems);
+ItemRouter.put("/update/:plu", validate(validateUpdateItem), ItemController.updateItem);
+ItemRouter.delete("/delete/:plu", validate(validateDeleteItem), ItemController.deleteItem);
 
-module.exports = inventoryRouter;
+module.exports = ItemRouter;

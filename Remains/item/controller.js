@@ -1,8 +1,8 @@
-const ApiError = require("./errors");
-const InventoryService = require("./service");
+const ApiError = require("../../errors");
+const ItemService = require("./service");
 const { validationResult } = require("express-validator");
 
-class InventoryController {
+class ItemController {
   async createItem(req, res, next) {
     try {
       const errors = validationResult(req);
@@ -11,7 +11,7 @@ class InventoryController {
       }
 
       const { name } = req.body;
-      const item = await InventoryService.createItem(name);
+      const item = await ItemService.createItem(name);
       return res.status(201).json(item);
     } catch (e) {
       next(e);
@@ -26,7 +26,7 @@ class InventoryController {
         return next(ApiError.BadRequest("Validation error", errors.array()));
       }
 
-      const item = await InventoryService.getItemByPlu(plu);
+      const item = await ItemService.getItemByPlu(plu);
       if (!item) {
         return next(ApiError.NotFound(`Item with PLU ${plu} was not found`));
       }
@@ -44,7 +44,7 @@ class InventoryController {
         return next(ApiError.BadRequest("Validation error", errors.array()));
       }
 
-      const item = await InventoryService.getItemByName(name);
+      const item = await ItemService.getItemByName(name);
       if (!item) {
         return next(ApiError.NotFound(`Item with name ${name} was not found`));
       }
@@ -56,7 +56,7 @@ class InventoryController {
 
   async getAllItems(req, res, next) {
     try {
-      const items = await InventoryService.getAllItems();
+      const items = await ItemService.getAllItems();
       return res.json(items);
     } catch (e) {
       next(e);
@@ -72,7 +72,7 @@ class InventoryController {
         return next(ApiError.BadRequest("Validation error", errors.array()));
       }
 
-      const updatedItem = await InventoryService.updateItem(plu, name);
+      const updatedItem = await ItemService.updateItem(plu, name);
       if (!updatedItem) {
         return next(ApiError.NotFound(`Item with PLU ${plu} was not found`));
       }
@@ -90,7 +90,7 @@ class InventoryController {
         return next(ApiError.BadRequest("Validation error", errors.array()));
       }
 
-      const deletedItem = await InventoryService.deleteItem(plu);
+      const deletedItem = await ItemService.deleteItem(plu);
       if (!deletedItem) {
         return next(ApiError.NotFound(`Item with PLU ${plu} was not found`));
       }
@@ -101,4 +101,4 @@ class InventoryController {
   }
 }
 
-module.exports = new InventoryController();
+module.exports = new ItemController();

@@ -1,11 +1,11 @@
-const InventoryRepo = require("./repository");
+const ItemRepo = require("./repository");
 const { v4: uuid } = require("uuid");
 
-class InventoryService {
+class ItemService {
   createItem = async (name) => {
     const plu = uuid();
     try {
-      const item = await InventoryRepo.createItem(plu, name);
+      const item = await ItemRepo.createItem(plu, name);
       return item.rows[0];
     } catch (e) {
       throw e;
@@ -13,7 +13,7 @@ class InventoryService {
   };
   getItemByPlu = async (plu) => {
     try {
-      const item = await InventoryRepo.getItemByPlu(plu);
+      const item = await ItemRepo.getItemByPlu(plu);
       return item.rows[0];
     } catch (e) {
       throw e;
@@ -21,7 +21,7 @@ class InventoryService {
   };
   getItemByName = async (name) => {
     try {
-      const item = await InventoryRepo.getItemByName(name);
+      const item = await ItemRepo.getItemByName(name);
       return item.rows[0];
     } catch (e) {
       throw e;
@@ -29,7 +29,7 @@ class InventoryService {
   };
   getAllItems = async () => {
     try {
-      const items = await InventoryRepo.getAllItems();
+      const items = await ItemRepo.getAllItems();
       return items.rows;
     } catch (e) {
       throw e;
@@ -37,7 +37,7 @@ class InventoryService {
   };
   updateItem = async (plu, name) => {
     try {
-      const item = await InventoryRepo.updateItem(plu, name);
+      const item = await ItemRepo.updateItem(plu, name);
       return item.rows[0];
     } catch (e) {
       throw e;
@@ -45,7 +45,7 @@ class InventoryService {
   };
   deleteItem = async (plu) => {
     try {
-      const item = await InventoryRepo.deleteItem(plu);
+      const item = await ItemRepo.deleteItem(plu);
       return item.rows[0];
     } catch (e) {
       throw e;
@@ -53,4 +53,4 @@ class InventoryService {
   };
 }
 
-module.exports = new InventoryService;
+module.exports = new ItemService;

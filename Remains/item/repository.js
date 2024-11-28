@@ -1,5 +1,5 @@
-const { pool } = require("../db");
-class InventoryRepo {
+const { pool } = require("../../db");
+class ItemRepo {
   createItem = async (plu, name) => {
     try {
       return await pool.query(
@@ -47,4 +47,4 @@ class InventoryRepo {
   };
 }
 
-module.exports = new InventoryRepo();
+module.exports = new ItemRepo();
