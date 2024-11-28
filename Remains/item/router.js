@@ -5,56 +5,30 @@ const { body, param } = require("express-validator");
 
 const ItemRouter = new Router();
 
-
-const validateCreateItem = [
-  body("name")
-    .notEmpty()
-    .withMessage("Name is required")
-    .isString()
-    .withMessage("Name must be a string"),
-];
-
-const validateGetItemByPlu = [
+const validateParamPlu = [
   param("plu")
     .notEmpty()
     .withMessage("PLU is required")
     .isUUID()
     .withMessage("PLU must be a valid UUID"),
-];
-
-const validateGetItemByName = [
-    param("name")
+]
+const validateParamName = [
+  param("name")
       .notEmpty()
       .withMessage("Name is required"),
-  ];
-  
-const validateUpdateItem = [
-  param("plu")
-    .notEmpty()
-    .withMessage("PLU is required")
-    .isUUID()
-    .withMessage("PLU must be a valid UUID"),
+]
+const validateBodyName = [
   body("name")
-    .notEmpty()
-    .withMessage("Name is required")
-    .isString()
-    .withMessage("Name must be a string"),
-];
-
-const validateDeleteItem = [
-  param("plu")
-    .notEmpty()
-    .withMessage("PLU is required")
-    .isUUID()
-    .withMessage("PLU must be a valid UUID"),
-];
+      .notEmpty()
+      .withMessage("Name is required"),
+]
 
 
-ItemRouter.post("/create", validate(validateCreateItem), ItemController.createItem);
-ItemRouter.get("/:plu", validate(validateGetItemByPlu), ItemController.getItemByPlu);
-ItemRouter.get("/name/:name", validate(validateGetItemByName), ItemController.getItemByName);
+ItemRouter.post("/create", validate(validateBodyName), ItemController.createItem);
 ItemRouter.get("/all", ItemController.getAllItems);
-ItemRouter.put("/update/:plu", validate(validateUpdateItem), ItemController.updateItem);
-ItemRouter.delete("/delete/:plu", validate(validateDeleteItem), ItemController.deleteItem);
+ItemRouter.get("/name/:name", validate(validateParamName), ItemController.getItemByName);
+ItemRouter.put("/update/:plu", validate([...validateParamPlu, ...validateBodyName]), ItemController.updateItem);
+ItemRouter.get("/:plu", validate(validateParamPlu), ItemController.getItemByPlu);
+ItemRouter.delete("/delete/:plu", validate(validateParamPlu), ItemController.deleteItem);
 
 module.exports = ItemRouter;

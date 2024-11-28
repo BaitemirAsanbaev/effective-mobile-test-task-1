@@ -3,7 +3,7 @@ const ApiError = require("./errors");
 const errorHandler = (err, req, res, next) => {
   if (err.code === "23505") {
     return res.status(400).json({
-      message: `Entity with name - ${req.body.name} already exists`,
+      message: `Entity - ${JSON.stringify(req.body)} already exists`,
       error: err.detail || err.message,
     });
   }

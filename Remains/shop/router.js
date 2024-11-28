@@ -5,47 +5,23 @@ const { body, param } = require("express-validator");
 
 const ShopRouter = new Router();
 
-
-const validateCreateShop = [
-  body("name")
+const validateParamId = [
+  param("plu")
     .notEmpty()
-    .withMessage("Name is required")
-    .isString()
-    .withMessage("Name must be a string"),
-];
-
-const validateGetShopById = [
-  param("id")
-    .notEmpty()
-    .withMessage("ID is required")
-];
-  
-const validateUpdateShop = [
-  param("id")
-    .notEmpty()
-    .withMessage("ID is required")
+    .withMessage("PLU is required")
     .isUUID()
-    .withMessage("ID must be a valid UUID"),
+    .withMessage("PLU must be a valid UUID"),
+]
+const validateBodyName = [
   body("name")
-    .notEmpty()
-    .withMessage("Name is required")
-    .isString()
-    .withMessage("Name must be a string"),
-];
+      .notEmpty()
+      .withMessage("Name is required"),
+]
 
-const validateDeleteShop = [
-  param("id")
-    .notEmpty()
-    .withMessage("ID is required")
-    .isUUID()
-    .withMessage("ID must be a valid UUID"),
-];
-
-
-ShopRouter.post("/create", validate(validateCreateShop), ShopController.createShop);
+ShopRouter.post("/create", validate(validateBodyName), ShopController.createShop);
 ShopRouter.get("/all", ShopController.getAllShops);
-ShopRouter.get("/:id", validate(validateGetShopById), ShopController.getShopById);
-ShopRouter.put("/update/:id", validate(validateUpdateShop), ShopController.updateShop);
-ShopRouter.delete("/delete/:id", validate(validateDeleteShop), ShopController.deleteShop);
+ShopRouter.get("/:id", validate(validateParamId), ShopController.getShopById);
+ShopRouter.put("/update/:id", validate([...validateParamId, ...validateBodyName]), ShopController.updateShop);
+ShopRouter.delete("/delete/:id", validate(validateParamId), ShopController.deleteShop);
 
 module.exports = ShopRouter;

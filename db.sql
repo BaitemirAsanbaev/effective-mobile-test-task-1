@@ -4,8 +4,8 @@ CREATE TABLE Shop ("id" SERIAL PRIMARY KEY, "name" VARCHAR(50) UNIQUE);
 
 CREATE TABLE
     Inventory (
-        "item_plu" UUID,
-        "shop_id" INT,
+        "item_plu" UUID NOT NULL,
+        "shop_id" INT NOT NULL,
         "ordered_amount" INT,
         "available_amount" INT,
         FOREIGN KEY ("item_plu") REFERENCES Item (plu),

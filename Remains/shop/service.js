@@ -12,7 +12,7 @@ class ShopService {
   getShopById = async (id) => {
     try {
       const shop = await ShopRepo.getShopById(id);
-      return shop.rows[0];
+      return shop.rows;
     } catch (e) {
       throw e;
     }

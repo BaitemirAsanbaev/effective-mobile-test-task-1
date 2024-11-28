@@ -4,6 +4,7 @@ const cors = require('cors');
 const ItemRouter = require('./Remains/item/router');
 const errorHandler = require('./error-handler');
 const ShopRouter = require('./Remains/shop/router');
+const InventoryRouter = require('./Remains/inventory/router');
 
 dotenv.config();
 
@@ -16,6 +17,7 @@ app.use(cors({
 app.use(express.json());
 app.use("/api/v1/item", ItemRouter);
 app.use("/api/v1/shop", ShopRouter);
+app.use("/api/v1/inventory", InventoryRouter);
 app.use(errorHandler);
 
 const start = async () => {

@@ -15,7 +15,7 @@ class ShopController {
       return res.status(201).json(shop);
     } catch (e) {
       next(e);
-    }
+    } 
   }
 
   async getShopById(req, res, next) {
