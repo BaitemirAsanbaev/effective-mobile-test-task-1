@@ -1,3 +1,4 @@
+const ApiError = require("../../errors");
 const InventoryRepo = require("./repository");
 const { v4: uuid } = require("uuid");
 
@@ -62,7 +63,9 @@ class InventoryService {
   };
   increaseAvailable = async (item_plu, shop_id, amount) => {
     try {
-      console.log(item_plu, shop_id, amount);
+      if (amount < 0) {
+        throw ApiError.BadRequest('Increase available amount must be a positive value.');
+      }
 
       const inventory = await InventoryRepo.getInventory(item_plu, shop_id);
       const updatedInventory = await InventoryRepo.updateInventory(
@@ -81,6 +84,9 @@ class InventoryService {
   decreaseAvailable = async (item_plu, shop_id, amount) => {
     try {
       const inventory = await InventoryRepo.getInventory(item_plu, shop_id);
+      if (inventory.rows[0].available_amount - amount < 0) {
+        throw ApiError.BadRequest('Cannot decrease available amount below 0.');
+      }
       const updatedInventory = await InventoryRepo.updateInventory(
         item_plu,
         shop_id,
@@ -94,6 +100,9 @@ class InventoryService {
   };
   increaseOrdered = async (item_plu, shop_id, amount) => {
     try {
+      if (amount < 0) {
+        throw ApiError.BadRequest('Increase ordered amount must be a positive value.');
+      }
       const inventory = await InventoryRepo.getInventory(item_plu, shop_id);
       const updatedInventory = await InventoryRepo.updateInventory(
         item_plu,
@@ -109,6 +118,9 @@ class InventoryService {
   decreaseOrdered = async (item_plu, shop_id, amount) => {
     try {
       const inventory = await InventoryRepo.getInventory(item_plu, shop_id);
+      if (inventory.rows[0].ordered_amount - amount < 0) {
+        throw ApiError.BadRequest('Cannot decrease ordered amount below 0.');
+      }
       const updatedInventory = await InventoryRepo.updateInventory(
         item_plu,
         shop_id,
@@ -123,7 +135,9 @@ class InventoryService {
   orderItem = async (item_plu, shop_id, amount) => {
     try {
       const inventory = await InventoryRepo.getInventory(item_plu, shop_id);
-      
+      if (inventory.rows[0].available_amount - amount < 0) {
+        throw ApiError.BadRequest('Not enough inventory available to fulfill the order.');
+      }
       const updatedInventory = await InventoryRepo.updateInventory(
         item_plu,
         shop_id,
@@ -138,6 +152,9 @@ class InventoryService {
   refundItem = async (item_plu, shop_id, amount) => {
     try {
       const inventory = await InventoryRepo.getInventory(item_plu, shop_id);
+      if (inventory.rows[0].ordered_amount - amount < 0) {
+        throw ApiError.BadRequest('Cannot refund more items than were ordered.');
+      }
       const updatedInventory = await InventoryRepo.updateInventory(
         item_plu,
         shop_id,
