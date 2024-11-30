@@ -19,9 +19,9 @@ const validateParamName = [
     .withMessage("Name is required"),
 ];
 const validateBodyName = [
-  body("name")
+  `body("name")
     .notEmpty()
-    .withMessage("Name is required"),
+    .withMessage("Name is required")`,
 ];
 
 /**

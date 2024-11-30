@@ -5,7 +5,9 @@ const { v4: uuid } = require("uuid");
 class InventoryService {
   createInventory = async (item_plu, shop_id, amount = 0) => {
     try {
+      const id = uuid();
       const inventory = await InventoryRepo.createInventory(
+        id,
         item_plu,
         shop_id,
         amount

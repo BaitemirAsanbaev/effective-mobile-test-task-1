@@ -9,9 +9,11 @@ const swaggerSpec = require('./utils/swagger');
 const swaggerUi = require('swagger-ui-express');
 const logger = require("./utils/logger");
 const morgan = require("morgan");
+const multer = require("multer");
 
 dotenv.config();
 
+const upload = multer();
 const app = express();
 
 app.use(cors({
@@ -20,6 +22,7 @@ app.use(cors({
 }));
 
 app.use(express.json());
+app.use(upload.none());
 
 app.use('/swagger', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 

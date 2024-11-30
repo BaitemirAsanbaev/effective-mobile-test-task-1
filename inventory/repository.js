@@ -1,10 +1,10 @@
 const { pool } = require("../db/db");
 class InventoryRepo {
-  createInventory = async (item_plu, shop_id, amount) => {
+  createInventory = async (id, item_plu, shop_id, amount) => {
     try {
       return await pool.query(
-        "INSERT INTO inventory (item_plu, shop_id, ordered_amount, available_amount) VALUES ($1, $2, $3, $4) RETURNING *",
-        [item_plu, shop_id, 0, amount]
+        "INSERT INTO inventory (id, item_plu, shop_id, ordered_amount, available_amount) VALUES ($1, $2, $3, $4, $5) RETURNING *",
+        [id, item_plu, shop_id, 0, amount]
       );
     } catch (e) {
       throw e;
