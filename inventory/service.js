@@ -1,7 +1,8 @@
 const ApiError = require("../utils/errors");
+const logger = require("../utils/logger");
 const InventoryRepo = require("./repository");
 const { v4: uuid } = require("uuid");
-const { logger } = require("../utils/logger");  // Import the logger
+
 
 class InventoryService {
 
@@ -13,63 +14,27 @@ class InventoryService {
       logger.info(`Inventory created successfully: ${JSON.stringify(inventory.rows[0])}`);
       return inventory.rows[0];
     } catch (e) {
-      logger.error(`Error creating inventory item: ${e.message}`);
+      logger.error(`Error creating inventory item: ${e}`);
       throw e;
     }
   };
 
 
-  getInventoryByItemPlu = async (item_plu) => {
+
+  getInventory = async (request) => {
+    logger.error("service TOP")
+    
     try {
-      logger.info(`Fetching inventory for Item PLU: ${item_plu}`);
-      const inventory = await InventoryRepo.getInventoryByItemPlu(item_plu);
-      logger.info(`Fetched ${inventory.rows.length} inventory items for PLU: ${item_plu}`);
+      logger.info(`Fetching inventory for request: ${request}`);
+      const inventory = await InventoryRepo.getInventory(request);
+      logger.info(`Fetched ${inventory.rows.length} inventory items for request: ${request}`);
       return inventory.rows;
     } catch (e) {
-      logger.error(`Error fetching inventory for Item PLU: ${item_plu} - ${e.message}`);
+      logger.error("ERROR in service", e)
+      
       throw e;
     }
   };
-
-
-  getInventoryByShopId = async (shop_id) => {
-    try {
-      logger.info(`Fetching inventory for Shop ID: ${shop_id}`);
-      const inventory = await InventoryRepo.getInventoryByShopId(shop_id);
-      logger.info(`Fetched ${inventory.rows.length} inventory items for Shop ID: ${shop_id}`);
-      return inventory.rows;
-    } catch (e) {
-      logger.error(`Error fetching inventory for Shop ID: ${shop_id} - ${e.message}`);
-      throw e;
-    }
-  };
-
-
-  getInventoryByOrderedAmount = async (from, to) => {
-    try {
-      logger.info(`Fetching inventory with ordered amounts between: ${from} and ${to}`);
-      const inventory = await InventoryRepo.getInventoryByOrderedAmount(from, to);
-      logger.info(`Fetched ${inventory.rows.length} inventory items with ordered amounts between ${from} and ${to}`);
-      return inventory.rows;
-    } catch (e) {
-      logger.error(`Error fetching inventory by ordered amount: ${e.message}`);
-      throw e;
-    }
-  };
-
-
-  getInventoryByAvailableAmount = async (from, to) => {
-    try {
-      logger.info(`Fetching inventory with available amounts between: ${from} and ${to}`);
-      const inventory = await InventoryRepo.getInventoryByAvailableAmount(from, to);
-      logger.info(`Fetched ${inventory.rows.length} inventory items with available amounts between ${from} and ${to}`);
-      return inventory.rows;
-    } catch (e) {
-      logger.error(`Error fetching inventory by available amount: ${e.message}`);
-      throw e;
-    }
-  };
-
 
   getAllInventorys = async () => {
     try {
@@ -78,7 +43,7 @@ class InventoryService {
       logger.info(`Fetched ${inventorys.rows.length} inventory items`);
       return inventorys.rows;
     } catch (e) {
-      logger.error(`Error fetching all inventory items: ${e.message}`);
+      logger.error(`Error fetching all inventory items: ${e}`);
       throw e;
     }
   };
@@ -90,7 +55,7 @@ class InventoryService {
         throw ApiError.BadRequest('Increase available amount must be a positive value.');
       }
       logger.info(`Increasing available amount for Item PLU: ${item_plu}, Shop ID: ${shop_id} by ${amount}`);
-      const inventory = await InventoryRepo.getInventory(item_plu, shop_id);
+      const inventory = await InventoryRepo.getInventory({item_plu, shop_id});
       const updatedInventory = await InventoryRepo.updateInventory(
         item_plu,
         shop_id,
@@ -100,7 +65,7 @@ class InventoryService {
       logger.info(`Updated available amount for Item PLU: ${item_plu}, Shop ID: ${shop_id}`);
       return updatedInventory.rows[0];
     } catch (e) {
-      logger.error(`Error increasing available amount for Item PLU: ${item_plu}, Shop ID: ${shop_id} - ${e.message}`);
+      logger.error(`Error increasing available amount for Item PLU: ${item_plu}, Shop ID: ${shop_id} - ${e}`);
       throw e;
     }
   };
@@ -122,7 +87,7 @@ class InventoryService {
       logger.info(`Updated available amount for Item PLU: ${item_plu}, Shop ID: ${shop_id}`);
       return updatedInventory.rows[0];
     } catch (e) {
-      logger.error(`Error decreasing available amount for Item PLU: ${item_plu}, Shop ID: ${shop_id} - ${e.message}`);
+      logger.error(`Error decreasing available amount for Item PLU: ${item_plu}, Shop ID: ${shop_id} - ${e}`);
       throw e;
     }
   };
@@ -144,7 +109,7 @@ class InventoryService {
       logger.info(`Updated ordered amount for Item PLU: ${item_plu}, Shop ID: ${shop_id}`);
       return updatedInventory.rows[0];
     } catch (e) {
-      logger.error(`Error increasing ordered amount for Item PLU: ${item_plu}, Shop ID: ${shop_id} - ${e.message}`);
+      logger.error(`Error increasing ordered amount for Item PLU: ${item_plu}, Shop ID: ${shop_id} - ${e}`);
       throw e;
     }
   };
@@ -166,7 +131,7 @@ class InventoryService {
       logger.info(`Updated ordered amount for Item PLU: ${item_plu}, Shop ID: ${shop_id}`);
       return updatedInventory.rows[0];
     } catch (e) {
-      logger.error(`Error decreasing ordered amount for Item PLU: ${item_plu}, Shop ID: ${shop_id} - ${e.message}`);
+      logger.error(`Error decreasing ordered amount for Item PLU: ${item_plu}, Shop ID: ${shop_id} - ${e}`);
       throw e;
     }
   };
@@ -188,7 +153,7 @@ class InventoryService {
       logger.info(`Updated inventory after ordering Item PLU: ${item_plu}, Shop ID: ${shop_id}`);
       return updatedInventory.rows[0];
     } catch (e) {
-      logger.error(`Error ordering Item PLU: ${item_plu}, Shop ID: ${shop_id} - ${e.message}`);
+      logger.error(`Error ordering Item PLU: ${item_plu}, Shop ID: ${shop_id} - ${e}`);
       throw e;
     }
   };
@@ -210,7 +175,7 @@ class InventoryService {
       logger.info(`Updated inventory after refunding Item PLU: ${item_plu}, Shop ID: ${shop_id}`);
       return updatedInventory.rows[0];
     } catch (e) {
-      logger.error(`Error refunding Item PLU: ${item_plu}, Shop ID: ${shop_id} - ${e.message}`);
+      logger.error(`Error refunding Item PLU: ${item_plu}, Shop ID: ${shop_id} - ${e}`);
       throw e;
     }
   };
@@ -222,7 +187,7 @@ class InventoryService {
       logger.info(`Inventory deleted for Item PLU: ${item_plu}, Shop ID: ${shop_id}`);
       return inventory.rows[0];
     } catch (e) {
-      logger.error(`Error deleting inventory for Item PLU: ${item_plu}, Shop ID: ${shop_id} - ${e.message}`);
+      logger.error(`Error deleting inventory for Item PLU: ${item_plu}, Shop ID: ${shop_id} - ${e}`);
       throw e;
     }
   };

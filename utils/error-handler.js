@@ -1,6 +1,8 @@
 const ApiError = require("./errors");
+const logger = require("./logger");
 
 const errorHandler = (err, req, res, next) => {
+  logger.info(`${err}, ${req}, ${res}, ${next}`)
   if (err.code === "23505") {
     return res.status(400).json({
       message: `Entity - ${JSON.stringify(req.body)} already exists`,

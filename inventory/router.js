@@ -86,20 +86,37 @@ InventoryRouter.post(
   validate([...validateItemPlu, ...validateShopID]),
   InventoryController.createInventory
 );
-
 /**
  * @swagger
- * /inventory/by-item/{item_plu}:
+ * /inventory:
  *   get:
- *     summary: Get inventory by item PLU
+ *     summary: Get inventory by item PLU and other optional fields
  *     tags: [Inventory]
  *     parameters:
- *       - in: path
+ *       - in: query
  *         name: item_plu
- *         required: true
+ *         required: false
  *         schema:
  *           type: string
  *           example: "e4d909c290d0fb1ca068ffaddf22cbd0"
+ *       - in: query
+ *         name: shop_id
+ *         required: false
+ *         schema:
+ *           type: string
+ *           example: "1"
+ *       - in: query
+ *         name: available_amount
+ *         required: false
+ *         schema:
+ *           type: integer
+ *           example: 100
+ *       - in: query
+ *         name: ordered_amount
+ *         required: false
+ *         schema:
+ *           type: integer
+ *           example: 50
  *     responses:
  *       200:
  *         description: Inventory data
@@ -117,97 +134,17 @@ InventoryRouter.post(
  *                 available_amount:
  *                   type: integer
  *                   example: 100
+ *                 ordered_amount:
+ *                   type: integer
+ *                   example: 50
  *       404:
  *         description: Item not found
  */
 InventoryRouter.get(
-  "/by-item/:item_plu",
-  validate(validateParamItemPlu),
-  InventoryController.getInventoryByItemPlu
+  "/",
+  InventoryController.getInventory
 );
 
-/**
- * @swagger
- * /inventory/by-shop/{shop_id}:
- *   get:
- *     summary: Get inventory by shop ID
- *     tags: [Inventory]
- *     parameters:
- *       - in: path
- *         name: shop_id
- *         required: true
- *         schema:
- *           type: string
- *           example: "1"
- *     responses:
- *       200:
- *         description: Inventory data
- *       404:
- *         description: Shop not found
- */
-InventoryRouter.get(
-  "/by-shop/:shop_id",
-  validate(validateParamShopID),
-  InventoryController.getInventoryByShopId
-);
-
-/**
- * @swagger
- * /inventory/by-ordered:
- *   get:
- *     summary: Get inventory by ordered amount range
- *     tags: [Inventory]
- *     parameters:
- *       - in: body
- *         name: amount_range
- *         required: true
- *         schema:
- *           type: object
- *           properties:
- *             from:
- *               type: integer
- *               example: 10
- *             to:
- *               type: integer
- *               example: 100
- *     responses:
- *       200:
- *         description: List of inventory items within the ordered amount range
- */
-InventoryRouter.get(
-  "/by-ordered",
-  validate(validateFromTo),
-  InventoryController.getInventoryByOrderedAmount
-);
-
-/**
- * @swagger
- * /inventory/by-available:
- *   get:
- *     summary: Get inventory by available amount range
- *     tags: [Inventory]
- *     parameters:
- *       - in: body
- *         name: amount_range
- *         required: true
- *         schema:
- *           type: object
- *           properties:
- *             from:
- *               type: integer
- *               example: 10
- *             to:
- *               type: integer
- *               example: 100
- *     responses:
- *       200:
- *         description: List of inventory items within the available amount range
- */
-InventoryRouter.get(
-  "/by-available",
-  validate(validateFromTo),
-  InventoryController.getInventoryByAvailableAmount
-);
 
 /**
  * @swagger

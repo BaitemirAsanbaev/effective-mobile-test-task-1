@@ -27,13 +27,13 @@ app.use(upload.none());
 app.use('/swagger', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 app.use(morgan("combined", { stream: { write: (message) => logger.info(message.trim()) } }));
+app.use(errorHandler);
 
 app.use("/api/v1/item", ItemRouter);
 app.use("/api/v1/shop", ShopRouter);
 app.use("/api/v1/inventory", InventoryRouter);
 
 
-app.use(errorHandler);
 
 const start = () => {
     const port = process.env.PORT || 5000;

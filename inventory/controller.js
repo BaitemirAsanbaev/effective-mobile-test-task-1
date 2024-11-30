@@ -1,10 +1,12 @@
 const ApiError = require("../utils/errors");
+const logger = require("../utils/logger");
 const InventoryService = require("./service");
 const { validationResult } = require("express-validator");
 
 class InventoryController {
   async createInventory(req, res, next) {
     try {
+
       const errors = validationResult(req);
       if (!errors.isEmpty()) {
         return next(ApiError.BadRequest("Validation error", errors.array()));
@@ -14,79 +16,33 @@ class InventoryController {
       const inventory = await InventoryService.createInventory(item_plu, shop_id, amount);
       return res.status(201).json(inventory);
     } catch (e) {
+
       next(e);
     }
   }
 
-  async getInventoryByItemPlu(req, res, next) {
-    const item_plu = req.params.item_plu;
+  async getInventory(req, res, next) {
+    const request = req.body
+    logger.info(`"REQUEST", ${JSON.stringify(req.body)}`)
+
     try {
       const errors = validationResult(req);
       if (!errors.isEmpty()) {
         return next(ApiError.BadRequest("Validation error", errors.array()));
       }
 
-      const inventory = await InventoryService.getInventoryByItemPlu(item_plu);
+      const inventory = await InventoryService.getInventory(request);
       if (!inventory) {
-        return next(ApiError.NotFound(`Inventory with PLU ${item_plu} was not found`));
+        return next(ApiError.NotFound(`Inventory ${request} was not found`));
       }
       return res.json(inventory);
     } catch (e) {
+      logger.error(`ERROR in controler${e}`)
+      
       next(e);
     }
   }
 
-  async getInventoryByShopId(req, res, next) {
-    const shop_id = req.params.shop_id;
-    try {
-      const errors = validationResult(req);
-      if (!errors.isEmpty()) {
-        return next(ApiError.BadRequest("Validation error", errors.array()));
-      }
-
-      const inventory = await InventoryService.getInventoryByShopId(shop_id);
-      if (!inventory) {
-        return next(ApiError.NotFound(`Inventory with shop_id ${shop_id} was not found`));
-      }
-      return res.json(inventory);
-    } catch (e) {
-      next(e);
-    }
-  }
-  async getInventoryByOrderedAmount(req, res, next) {
-    const {from, to} = req.body;
-    try {
-      const errors = validationResult(req);
-      if (!errors.isEmpty()) {
-        return next(ApiError.BadRequest("Validation error", errors.array()));
-      }
-
-      const inventory = await InventoryService.getInventoryByOrderedAmount(from, to);
-      if (!inventory) {
-        return next(ApiError.NotFound(`Inventories with amount of ordered items in range from ${from} to ${to} were not found`))
-      }
-      return res.json(inventory);
-    } catch (e) {
-      next(e);
-    }
-  }
-  async getInventoryByAvailableAmount(req, res, next) {
-    const {from, to} = req.body;
-    try {
-      const errors = validationResult(req);
-      if (!errors.isEmpty()) {
-        return next(ApiError.BadRequest("Validation error", errors.array()));
-      }
-
-      const inventory = await InventoryService.getInventoryByAvailableAmount(from, to);
-      if (!inventory) {
-        return next(ApiError.NotFound(`Inventories with amount of available items in range from ${from} to ${to} were not found`));
-      }
-      return res.json(inventory);
-    } catch (e) {
-      next(e);
-    }
-  }
 
   async getAllInventorys(req, res, next) {
     try {
