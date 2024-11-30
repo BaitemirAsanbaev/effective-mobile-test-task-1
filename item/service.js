@@ -11,6 +11,7 @@ class ItemService {
       throw e;
     }
   };
+
   getItemByPlu = async (plu) => {
     try {
       const item = await ItemRepo.getItemByPlu(plu);
@@ -19,6 +20,7 @@ class ItemService {
       throw e;
     }
   };
+
   getItemByName = async (name) => {
     try {
       const item = await ItemRepo.getItemByName(name);
@@ -27,6 +29,7 @@ class ItemService {
       throw e;
     }
   };
+
   getAllItems = async () => {
     try {
       const items = await ItemRepo.getAllItems();
@@ -35,6 +38,7 @@ class ItemService {
       throw e;
     }
   };
+
   updateItem = async (plu, name) => {
     try {
       const item = await ItemRepo.updateItem(plu, name);
@@ -43,6 +47,7 @@ class ItemService {
       throw e;
     }
   };
+
   deleteItem = async (plu) => {
     try {
       const item = await ItemRepo.deleteItem(plu);
@@ -53,4 +58,4 @@ class ItemService {
   };
 }
 
-module.exports = new ItemService;
+module.exports = new ItemService();
