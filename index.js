@@ -24,7 +24,7 @@ app.use(cors({
 app.use(express.json());
 app.use(upload.none());
 
-app.use('/swagger', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 app.use(morgan("combined", { stream: { write: (message) => logger.info(message.trim()) } }));
 app.use(errorHandler);
