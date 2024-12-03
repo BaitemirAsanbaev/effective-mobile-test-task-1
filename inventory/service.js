@@ -1,8 +1,10 @@
+const { default: axios } = require("axios");
 const ApiError = require("../utils/errors");
 const logger = require("../utils/logger");
 const InventoryRepo = require("./repository");
 const { v4: uuid } = require("uuid");
-
+const dotenv = require("dotenv")
+dotenv.config();
 
 class InventoryService {
 
@@ -11,7 +13,10 @@ class InventoryService {
       const id = uuid();
       logger.info(`Creating inventory with ID: ${id}, Item PLU: ${item_plu}, Shop ID: ${shop_id}, Amount: ${amount}`);
       const inventory = await InventoryRepo.createInventory(id, item_plu, shop_id, amount);
-      logger.info(`Inventory created successfully: ${JSON.stringify(inventory.rows[0])}`);
+      const newInventory = inventory.rows[0]
+      logger.info(`Inventory created successfully: ${JSON.stringify(newInventory)}`);
+      const res = await axios.post(process.env.SIDE_SERVICE_URL+'/api/v1/history/create', {inventory_id:newInventory.id, amount, action:"CREATE"})
+      logger.info(`Creation action added to history: ${res.data}`);
       return inventory.rows[0];
     } catch (e) {
       logger.error(`Error creating inventory item: ${e}`);
@@ -63,6 +68,8 @@ class InventoryService {
         inventory.rows[0].available_amount + amount
       );
       logger.info(`Updated available amount for Item PLU: ${item_plu}, Shop ID: ${shop_id}`);
+      const res = await axios.post(process.env.SIDE_SERVICE_URL+'/api/v1/history/create', {inventory_id:inventory.rows[0].id, amount, action:"INCREASE_AVAILABLE"})
+      logger.info(res.data)
       return updatedInventory.rows[0];
     } catch (e) {
       logger.error(`Error increasing available amount for Item PLU: ${item_plu}, Shop ID: ${shop_id} - ${e}`);
@@ -85,6 +92,8 @@ class InventoryService {
         inventory.rows[0].available_amount - amount
       );
       logger.info(`Updated available amount for Item PLU: ${item_plu}, Shop ID: ${shop_id}`);
+      const res = await axios.post(process.env.SIDE_SERVICE_URL+'/api/v1/history/create', {inventory_id:inventory.rows[0].id, amount, action:"DECREASE_AVAILABLE"})
+      logger.info(res.data)
       return updatedInventory.rows[0];
     } catch (e) {
       logger.error(`Error decreasing available amount for Item PLU: ${item_plu}, Shop ID: ${shop_id} - ${e}`);
@@ -107,6 +116,8 @@ class InventoryService {
         null
       );
       logger.info(`Updated ordered amount for Item PLU: ${item_plu}, Shop ID: ${shop_id}`);
+      const res = await axios.post(process.env.SIDE_SERVICE_URL+'/api/v1/history/create', {inventory_id:inventory.rows[0].id, amount, action:"INCREASE_ORDERED"})
+      logger.info(res.data)
       return updatedInventory.rows[0];
     } catch (e) {
       logger.error(`Error increasing ordered amount for Item PLU: ${item_plu}, Shop ID: ${shop_id} - ${e}`);
@@ -129,6 +140,8 @@ class InventoryService {
         null
       );
       logger.info(`Updated ordered amount for Item PLU: ${item_plu}, Shop ID: ${shop_id}`);
+      const res = await axios.post(process.env.SIDE_SERVICE_URL+'/api/v1/history/create', {inventory_id:inventory.rows[0].id, amount, action:"DECREASE_ORDERED"})
+      logger.info(res.data)
       return updatedInventory.rows[0];
     } catch (e) {
       logger.error(`Error decreasing ordered amount for Item PLU: ${item_plu}, Shop ID: ${shop_id} - ${e}`);
@@ -151,6 +164,8 @@ class InventoryService {
         inventory.rows[0].available_amount - amount
       );
       logger.info(`Updated inventory after ordering Item PLU: ${item_plu}, Shop ID: ${shop_id}`);
+      const res = await axios.post(process.env.SIDE_SERVICE_URL+'/api/v1/history/create', {inventory_id:inventory.rows[0].id, amount, action:"ORDER"})
+      logger.info(res.data)
       return updatedInventory.rows[0];
     } catch (e) {
       logger.error(`Error ordering Item PLU: ${item_plu}, Shop ID: ${shop_id} - ${e}`);
@@ -173,6 +188,8 @@ class InventoryService {
         inventory.rows[0].available_amount + amount
       );
       logger.info(`Updated inventory after refunding Item PLU: ${item_plu}, Shop ID: ${shop_id}`);
+      const res = await axios.post(process.env.SIDE_SERVICE_URL+'/api/v1/history/create', {inventory_id:inventory.rows[0].id, amount, action:"REFUND"})
+      logger.info(res.data)
       return updatedInventory.rows[0];
     } catch (e) {
       logger.error(`Error refunding Item PLU: ${item_plu}, Shop ID: ${shop_id} - ${e}`);
@@ -185,6 +202,8 @@ class InventoryService {
       logger.info(`Deleting inventory for Item PLU: ${item_plu}, Shop ID: ${shop_id}`);
       const inventory = await InventoryRepo.deleteInventory(item_plu, shop_id);
       logger.info(`Inventory deleted for Item PLU: ${item_plu}, Shop ID: ${shop_id}`);
+      const res = await axios.post(process.env.SIDE_SERVICE_URL+'/api/v1/history/create', {inventory_id:inventory.rows[0].id, amount, action:"DELETE"})
+      logger.info(res.data)
       return inventory.rows[0];
     } catch (e) {
       logger.error(`Error deleting inventory for Item PLU: ${item_plu}, Shop ID: ${shop_id} - ${e}`);
